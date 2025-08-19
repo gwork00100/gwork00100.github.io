@@ -1,0 +1,106 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "310a22c8-0f85-48f6-bcde-8179cdda2dd9",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -528,
+        -32
+      ],
+      "id": "524db770-3f5f-4976-ae8a-36787c8f09f2",
+      "name": "Webhook",
+      "webhookId": "310a22c8-0f85-48f6-bcde-8179cdda2dd9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -32
+      ],
+      "id": "ad37d513-2671-44da-98ed-87ca80311a50",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "16bac5bd-3433-47e8-bc6a-f01af9237da2",
+      "name": "Download file"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        -176
+      ],
+      "id": "53ac2784-b584-4993-8d48-1ef5b3570294",
+      "name": "Download file1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "22c6cd3f-6727-4471-bf74-42f8e13ba974",
+  "meta": {
+    "instanceId": "9f0775458ca4a7adae87cb6425fb0dd7ef0e718ccf208a11024f7c68fd4eb1cb"
+  },
+  "id": "PXyYlmtPi2XL8aVo",
+  "tags": []
+}

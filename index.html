@@ -1,12 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Welcome to gwork00100.github.io</title>
-</head>
-<body>
-  <h1>Hello, GitHub Pages!</h1>
-  <p>This is your new website hosted for free on GitHub Pages with SSL.</p>
-</body>
+<html>
+  <head>
+    <title>Media Funnel Frontend</title>
+  </head>
+  <body>
+    <h1>Media Funnel</h1>
+    <button id="fetchBtn">Fetch Data</button>
+    <pre id="output"></pre>
+
+    <script>
+      const backendUrl = "https://media-funnel-backend.onrender.com";
+
+      document.getElementById("fetchBtn").onclick = () => {
+        fetch(`${backendUrl}/api/some-endpoint`)
+          .then(res => res.json())
+          .then(data => {
+            document.getElementById("output").textContent =
+              JSON.stringify(data, null, 2);
+          })
+          .catch(err => {
+            console.error("Fetch error:", err);
+          });
+      };
+    </script>
+  </body>
 </html>
+

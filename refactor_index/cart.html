@@ -1,0 +1,97 @@
+<style>
+    .cart-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        font-family: Arial, sans-serif;
+        color: #0f1111;
+    }
+    .cart-container h2 {
+        font-size: 24px;
+        font-weight: 500;
+        border-bottom: 1px solid #eaeded;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    #cartList {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .cart-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #eaeded;
+    }
+    .cart-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+    }
+    .cart-item-details {
+        flex: 1;
+        margin-left: 20px;
+    }
+    .cart-item-details h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+    }
+    .cart-item-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 8px;
+    }
+    .cart-item-actions button {
+        padding: 5px 10px;
+        border: 1px solid #d5d9d9;
+        background: #f7fafa;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .cart-item-actions button:hover {
+        background: #e3e6e6;
+    }
+    .removeItem {
+        background: #cc0c39 !important;
+        color: white;
+        border: none !important;
+    }
+    .removeItem:hover {
+        background: #a80a2f !important;
+    }
+    #cartTotal {
+        font-size: 20px;
+        font-weight: 700;
+        text-align: right;
+        margin-top: 25px;
+    }
+    #proceedCheckoutBtn {
+        display: block;
+        margin-left: auto;
+        padding: 12px 24px;
+        width: 220px;
+        background: #ffd814;
+        border: 1px solid #fcd200;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(213,217,217,.5);
+    }
+    #proceedCheckoutBtn:hover {
+        background: #f7ca00;
+    }
+</style>
+
+<div class="cart-container">
+    <h2 data-i18n="yourCart">Your Cart</h2>
+    <div id="cartList"></div>
+    <h3 id="cartTotal">Total: $0.00</h3>
+    <button id="proceedCheckoutBtn" data-i18n="proceedToCheckout">Proceed to Checkout</button>
+</div>

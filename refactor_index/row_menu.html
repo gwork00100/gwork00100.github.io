@@ -1,0 +1,26 @@
+<!-- refactor_index/row_menu.html -->
+
+<!-- refactor_index/row_menu.html -->
+<nav class="categories">
+    <a href="#" data-category="electronics" data-i18n="catElectronics">Electronics</a>
+    <a href="#" data-category="clothing" data-i18n="catClothing">Clothing</a>
+    <a href="#" data-category="games" data-i18n="catGames">Games</a>
+    <a href="#" data-category="fitness" data-i18n="catFitness">Fitness</a>
+    <a href="#" data-category="beauty" data-i18n="catBeauty">Beauty</a>
+    <a href="#" data-category="health" data-i18n="catHealth">Health</a>
+    <a href="#" data-category="automotive" data-i18n="catAutomotive">Automotive</a>
+    <a href="#" data-category="jobs" data-i18n="catJobs">Jobs</a>
+    <a href="#" data-category="more" data-i18n="catMore">More</a>
+</nav>
+
+<script>
+    document.querySelectorAll(".categories a[data-category]").forEach(l => {
+        l.onclick = e => {
+            e.preventDefault();
+            const category = l.dataset.category.toLowerCase().trim();
+            if (typeof window.renderProducts === "function") {
+                window.renderProducts(category);
+            }
+        };
+    });
+</script>

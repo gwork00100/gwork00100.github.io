@@ -1,0 +1,222 @@
+<!-- refactor_index/language.html -->
+<style>
+    .language-selector {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 5px 8px;
+        border: 1px solid transparent;
+        border-radius: 2px;
+    }
+    .language-selector:hover {
+        border-color: #ffffff;
+    }
+    .language-select-native {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    .language-content {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        pointer-events: none;
+    }
+    .language-content::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: 4px;
+        vertical-align: middle;
+        border-top: 4px solid #a7a7a7;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+    }
+    .language-select-native option {
+        background: #131921;
+        color: white;
+        padding: 6px 10px;
+    }
+</style>
+
+<div class="language-selector">
+    <div class="language-content">
+        <span id="langFlag">🇺🇸</span>
+        <span id="langCode">EN</span>
+    </div>
+    <select id="languageSelect" class="language-select-native" aria-label="Choose a language">
+        <option value="en" selected>🇺🇸 EN - English</option>
+        <option value="es">🇪🇸 ES - Español</option>
+        <option value="fr">🇫🇷 FR - Français</option>
+        <option value="ht">🇭🇹 HT - Kreyòl Ayisyen</option>
+        <option value="ar">🇪🇬 AR - العربية</option>
+        <option value="de">🇩🇪 DE - Deutsch</option>
+        <option value="zh">🇨🇳 ZH - 中文</option>
+        <option value="ja">🇯🇵 JA - 日本語</option>
+        <option value="pt">🇧🇷 PT - Português</option>
+    </select>
+</div>
+
+<script>
+    window.translations = {
+        en: {
+            hello: "Sign in", flag: "🇺🇸", code: "EN",
+            searchPlaceholder: "Search products...", searchBtn: "Search",
+            returnsTop: "Returns", returnsBottom: "& Orders",
+            signIn: "Sign In", messages: "Messages", aiAssistant: "AI Assistant",
+            browseProducts: "Browse Products", jobs: "Jobs", home: "Home",
+            signInTitle: "Sign In", googleLogin: "Sign in with Google", emailLogin: "Sign in with Email",
+            createAccount: "Create Account", close: "Close",
+            catElectronics: "Electronics", catClothing: "Clothing", catGames: "Games",
+            catFitness: "Fitness", catBeauty: "Beauty", catHealth: "Health",
+            catAutomotive: "Automotive", catJobs: "Jobs", catMore: "More"
+        },
+        es: {
+            hello: "Identifícate", flag: "🇪🇸", code: "ES",
+            searchPlaceholder: "Buscar productos...", searchBtn: "Buscar",
+            returnsTop: "Devoluciones", returnsBottom: "y Pedidos",
+            signIn: "Identifícate", messages: "Mensajes", aiAssistant: "Asistente IA",
+            browseProducts: "Explorar productos", jobs: "Empleos", home: "Inicio",
+            signInTitle: "Identifícate", googleLogin: "Iniciar sesión con Google", emailLogin: "Iniciar sesión con correo",
+            createAccount: "Crear cuenta", close: "Cerrar",
+            catElectronics: "Electrónica", catClothing: "Ropa", catGames: "Juegos",
+            catFitness: "Fitness", catBeauty: "Belleza", catHealth: "Salud",
+            catAutomotive: "Automoción", catJobs: "Empleos", catMore: "Más"
+        },
+        fr: {
+            hello: "Identifiez-vous", flag: "🇫🇷", code: "FR",
+            searchPlaceholder: "Rechercher des produits...", searchBtn: "Rechercher",
+            returnsTop: "Retours", returnsBottom: "et Commandes",
+            signIn: "S'identifier", messages: "Messages", aiAssistant: "Assistant IA",
+            browseProducts: "Parcourir les produits", jobs: "Emplois", home: "Accueil",
+            signInTitle: "Connexion", googleLogin: "Se connecter avec Google", emailLogin: "Connexion par e-mail",
+            createAccount: "Créer un compte", close: "Fermer",
+            catElectronics: "Électronique", catClothing: "Vêtements", catGames: "Jeux",
+            catFitness: "Forme", catBeauty: "Beauté", catHealth: "Santé",
+            catAutomotive: "Automobile", catJobs: "Emplois", catMore: "Plus"
+        },
+        ht: {
+            hello: "Konekte", flag: "🇭🇹", code: "HT",
+            searchPlaceholder: "Chèche pwodwi...", searchBtn: "Chèche",
+            returnsTop: "Retou", returnsBottom: "& Kòmand",
+            signIn: "Konekte", messages: "Mesaj", aiAssistant: "Asistan IA",
+            browseProducts: "Gade Pwodwi yo", jobs: "Travay", home: "Akèy",
+            signInTitle: "Konekte", googleLogin: "Konekte ak Google", emailLogin: "Konekte ak Imèl",
+            createAccount: "Kreye Kont", close: "Fèmen",
+            catElectronics: "Elektwonik", catClothing: "Rad", catGames: "Jwèt",
+            catFitness: "Fitness", catBeauty: "Bote", catHealth: "Sante",
+            catAutomotive: "Otomobil", catJobs: "Travay", catMore: "Plis"
+        },
+        ar: {
+            hello: "تسجيل الدخول", flag: "🇪🇬", code: "AR",
+            searchPlaceholder: "بحث عن المنتجات...", searchBtn: "بحث",
+            returnsTop: "الإرجاع", returnsBottom: "والطلبات",
+            signIn: "تسجيل الدخول", messages: "الرسائل", aiAssistant: "مساعد الذكاء الاصطناعي",
+            browseProducts: "تصفح المنتجات", jobs: "وظائف", home: "الرئيسية",
+            signInTitle: "تسجيل الدخول", googleLogin: "تسجيل الدخول بواسطة جوجل", emailLogin: "تسجيل الدخول بالبريد",
+            createAccount: "إنشاء حساب", close: "إغلاق",
+            catElectronics: "إلكترونيات", catClothing: "ملابس", catGames: "ألعاب",
+            catFitness: "لياقة بدنية", catBeauty: "جمال", catHealth: "صحة",
+            catAutomotive: "سيارات", catJobs: "وظائف", catMore: "المزيد"
+        },
+        de: {
+            hello: "Anmelden", flag: "🇩🇪", code: "DE",
+            searchPlaceholder: "Produkte suchen...", searchBtn: "Suchen",
+            returnsTop: "Rücksendungen", returnsBottom: "& Bestellungen",
+            signIn: "Anmelden", messages: "Nachrichten", aiAssistant: "KI-Assistent",
+            browseProducts: "Produkte durchstöbern", jobs: "Jobs", home: "Startseite",
+            signInTitle: "Anmelden", googleLogin: "Mit Google anmelden", emailLogin: "Mit E-Mail anmelden",
+            createAccount: "Konto erstellen", close: "Schließen",
+            catElectronics: "Elektronik", catClothing: "Bekleidung", catGames: "Spiele",
+            catFitness: "Fitness", catBeauty: "Beauty", catHealth: "Gesundheit",
+            catAutomotive: "Auto", catJobs: "Jobs", catMore: "Mehr"
+        },
+        zh: {
+            hello: "登录", flag: "🇨🇳", code: "ZH",
+            searchPlaceholder: "搜索商品...", searchBtn: "搜索",
+            returnsTop: "退货", returnsBottom: "与订单",
+            signIn: "登录", messages: "消息", aiAssistant: "人工智能助手",
+            browseProducts: "浏览商品", jobs: "招聘", home: "首页",
+            signInTitle: "登录", googleLogin: "使用谷歌登录", emailLogin: "使用邮箱登录",
+            createAccount: "创建账户", close: "关闭",
+            catElectronics: "电子产品", catClothing: "服装", catGames: "游戏",
+            catFitness: "健身", catBeauty: "美妆", catHealth: "健康",
+            catAutomotive: "汽车", catJobs: "职位", catMore: "更多"
+        },
+        ja: {
+            hello: "サインイン", flag: "🇯🇵", code: "JA",
+            searchPlaceholder: "商品を検索...", searchBtn: "検索",
+            returnsTop: "注文履歴", returnsBottom: "と返品",
+            signIn: "サインイン", messages: "メッセージ", aiAssistant: "AIアシスタント",
+            browseProducts: "商品を見る", jobs: "求人", home: "ホーム",
+            signInTitle: "サインイン", googleLogin: "Googleでサインイン", emailLogin: "メールでサインイン",
+            createAccount: "アカウントを作成", close: "閉じる",
+            catElectronics: "エレクトロニクス", catClothing: "服＆ファッション小物", catGames: "ゲーム",
+            catFitness: "フィットネス", catBeauty: "ビューティー", catHealth: "ヘルス",
+            catAutomotive: "カー用品", catJobs: "求人", catMore: "その他"
+        },
+        pt: {
+            hello: "Identifique-se", flag: "🇧🇷", code: "PT",
+            searchPlaceholder: "Pesquisar produtos...", searchBtn: "Pesquisar",
+            returnsTop: "Devoluções", returnsBottom: "e Pedidos",
+            signIn: "Identifique-se", messages: "Mensagens", aiAssistant: "Assistente IA",
+            browseProducts: "Navegar pelos produtos", jobs: "Vagas", home: "Início",
+            signInTitle: "Identifique-se", googleLogin: "Entrar com o Google", emailLogin: "Entrar com e-mail",
+            createAccount: "Criar conta", close: "Fechar",
+            catElectronics: "Eletrônicos", catClothing: "Roupas", catGames: "Jogos",
+            catFitness: "Fitness", catBeauty: "Beleza", catHealth: "Saúde",
+            catAutomotive: "Automotivo", catJobs: "Vagas", catMore: "Mais"
+        }
+    };
+
+    window.updatePageText = function(lang) {
+        const t = window.translations[lang] || window.translations["en"];
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+            const key = el.getAttribute("data-i18n");
+            if (t[key]) el.innerText = t[key];
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+            const key = el.getAttribute("data-i18n-placeholder");
+            if (t[key]) el.placeholder = t[key];
+        });
+    };
+
+    function applyLanguageChange(lang) {
+        window.currentLang = lang;
+        const config = window.translations[lang] || window.translations["en"];
+        
+        const flagEl = document.getElementById("langFlag");
+        if (flagEl) flagEl.innerText = config.flag;
+        
+        const codeEl = document.getElementById("langCode");
+        if (codeEl) codeEl.innerText = config.code;
+
+        window.updatePageText(lang);
+
+        if (!window.currentUser) {
+            const helloEl = document.getElementById("accountHello");
+            if (helloEl) helloEl.innerText = config.hello;
+        }
+    }
+
+    const langSelect = document.getElementById("languageSelect");
+    if (langSelect) {
+        langSelect.addEventListener("change", function() {
+            applyLanguageChange(this.value);
+        });
+    }
+
+    // Immediately trigger on load to catch default or pre-set values
+    if (langSelect) {
+        applyLanguageChange(langSelect.value);
+    }
+</script>

@@ -1,0 +1,137 @@
+<!-- refactor_index/sign_in.html -->
+<style>
+    /* Account Hover Dropdown styling matching Amazon */
+    .account {
+        position: relative;
+        cursor: pointer;
+        padding: 8px 0;
+    }
+    #accountMenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 500px;
+        background: #ffffff;
+        color: #111;
+        border-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 4000;
+        padding: 20px;
+        cursor: default;
+        font-size: 13px;
+    }
+    .account:hover #accountMenu {
+        display: flex;
+        gap: 20px;
+    }
+    #accountMenu::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        right: 30px;
+        border-width: 0 8px 8px 8px;
+        border-style: solid;
+        border-color: transparent transparent #ffffff transparent;
+    }
+    .account-menu-left {
+        flex: 1;
+        border-right: 1px solid #eee;
+        padding-right: 20px;
+    }
+    .account-menu-right {
+        flex: 1;
+    }
+    .account-menu-left h4, .account-menu-right h4 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #111;
+    }
+    .account-menu-left ul, .account-menu-right ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .account-menu-left li, .account-menu-right li {
+        margin-bottom: 8px;
+    }
+    .account-menu-left a, .account-menu-right a {
+        color: #007185;
+        text-decoration: none;
+    }
+    .account-menu-left a:hover, .account-menu-right a:hover {
+        color: #c7511f;
+        text-decoration: underline;
+    }
+    .amazon-signin-btn-container {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .amazon-signin-btn {
+        background: #ffd814;
+        border: 1px solid #fcd200;
+        border-radius: 8px;
+        padding: 8px 0;
+        width: 80%;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .amazon-signin-btn:hover {
+        background: #f7ca00;
+    }
+    .signin-subtext {
+        font-size: 11px;
+        margin-top: 5px;
+        color: #555;
+    }
+    .signin-subtext a {
+        color: #007185;
+        text-decoration: none;
+    }
+    .signin-subtext a:hover {
+        color: #c7511f;
+        text-decoration: underline;
+    }
+</style>
+
+<div style="display: flex; flex-direction: column;">
+    <span style="font-size: 12px; font-weight: 400; color: #cccccc; line-height: 14px;">Hello,</span>
+    <span id="accountHello" style="font-size: 14px; font-weight: 700; color: #ffffff; line-height: 15px;">Sign in</span>
+</div>
+
+<div class="account-menu-left">
+    <div class="amazon-signin-btn-container" id="menuAuthSection">
+        <button class="amazon-signin-btn" id="dropdownSignInBtn">Sign in</button>
+        <div class="signin-subtext">New customer? <a href="#" id="dropdownStartHere">Start here.</a></div>
+    </div>
+    <h4>Your Lists</h4>
+    <ul>
+        <li><a href="#">Create a List</a></li>
+        <li><a href="#">Find a List or Registry</a></li>
+    </ul>
+</div>
+<div class="account-menu-right">
+    <h4>Your Account</h4>
+    <ul>
+        <li><a href="#">Account</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">Keep Shopping For</a></li>
+        <li><a href="#">Recommendations</a></li>
+        <li><a href="#">Browsing History</a></li>
+        <li><a href="#">Your Shopping Preferences</a></li>
+        <li><a href="#">Watchlist</a></li>
+        <li><a href="#">Video Purchases & Rentals</a></li>
+        <li><a href="#">Kindle Unlimited</a></li>
+        <li><a href="#">Content & Devices</a></li>
+        <li><a href="#">Subscribe & Save Items</a></li>
+        <li><a href="#">Memberships & Subscriptions</a></li>
+        <li><a href="#">Prime Membership</a></li>
+        <li><a href="#">Music Library</a></li>
+        <li><a href="#">Customer Service</a></li>
+        <li id="logoutListItem" style="display:none; margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><button id="logoutBtn" style="background:#cc0c39; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; width:100%;">Sign Out</button></li>
+    </ul>
+</div>

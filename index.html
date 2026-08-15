@@ -1,561 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrimeShift — Amazon Style Store</title>
-<link rel="stylesheet" href="styles.css">
-
-<script src="https://js.stripe.com/v3/"></script>
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeShift — Amazon Style Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
 <header class="header">
-
-    <div class="hamburger" id="hamburgerMenu">
-    &#9776; <!-- This is the 3-bar icon -->
-</div>
-
-
-    <div class="logo">
-        <a href="#" id="logoLink" style="color:white; text-decoration:none; font-weight:bold; font-size:24px;">PrimeShift</a>
+    <div class="nav-left">
+        <button id="hamburgerMenu" class="header-hamburger" type="button" aria-label="Open menu" onclick="openSidebar()">&#9776;</button>
+        <!-- Updated logo text to PrimeShift -->
+        <a href="#" id="logoLink" class="nav-logo">PrimeShift</a>
     </div>
-    <div class="search-bar">
 
-        <input type="text" placeholder="Search products…" id="searchInput" style="flex:1; padding:6px 10px; font-size:14px; border:none; border-radius:4px 0 0 4px; height:44px;">
-        <button style="padding:8px 16px; font-size:14px; border:none; background:#febd69; cursor:pointer; border-radius:0 4px 4px 0; height:44px;">Search</button>
+    <div class="nav-search">
+        <input type="text" placeholder="Search products..." id="searchInput" autocomplete="off" data-i18n-placeholder="searchPlaceholder">
+        <button type="button" data-i18n="searchBtn">Search</button>
     </div>
-<div class="header-right">
-    <div class="account" id="accountBox">
-        <div id="accountHello">Hello, Sign in</div>
-        <div id="accountMain">Account & Lists ▼</div>
-        <!-- Dropdown -->
-        <div id="accountMenu">
-            <div id="accountEmail"></div>
-            <button id="logoutBtn">Logout</button>
+
+    <div class="nav-right">
+        <!-- Language Switcher Imported Container -->
+        <div id="languageContainer"></div>
+
+        <div class="account" id="accountBox">
+            <div style="display: flex; flex-direction: column;">
+                <span id="accountHello" style="font-size: 14px; font-weight: 700; color: #ffffff; line-height: 15px;" data-i18n="signIn">Sign in</span>
+            </div>
+            <div id="accountMenu"></div>
         </div>
-    </div>
 
-    <!-- Replace old orders div with this -->
-    <div class="returns-orders">
-        Returns & Orders
-    </div>
+        <!-- Returns & Orders Imported Container -->
+        <div id="returnsContainer">
+            <div class="returns" style="color:white; font-size:12px; cursor:pointer;">
+                <span style="display:block;" data-i18n="returnsTop">Returns</span>
+                <span style="font-weight:700;" data-i18n="returnsBottom">& Orders</span>
+            </div>
+        </div>
 
-    <div class="cart" id="cartIcon">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/shopping-cart.png"/>
-        <span id="cartCount">0</span>
-    </div>
-</div>
-
-
-</div>
-
-        
+        <button class="nav-cart" id="cartIcon" type="button" aria-label="Shopping cart">
+            🛒 <span id="cartCount">0</span>
+        </button>
     </div>
 </header>
 
-
-
-
-<!-- ✅ Sidebar goes here -->
 <div id="mobileSidebar">
-    <button id="closeSidebar">&times;</button>
+    <button id="closeSidebar" onclick="closeSidebarMenu()">&times;</button>
     <div class="sidebar-content">
-        <a href="#" id="mobileSignIn">Sign In</a>
-        <a href="#">Browse Products</a>
-        <a href="#">Home</a>
+        <a href="#" id="mobileSignIn" data-i18n="signIn">Sign In</a>
+        <a href="#" id="mobileMessages" onclick="openStoreChatWidget(event)" data-i18n="messages">Messages</a>
+        <a href="#" id="mobileAiAssistant" onclick="openAiAssistantWidget(event)" data-i18n="aiAssistant">AI Assistant</a>
+        <hr>
+        <a href="#" data-i18n="browseProducts">Browse Products</a>
+        <a href="#" onclick="closeSidebarMenu(); renderProducts('jobs'); return false;" data-i18n="jobs">Jobs</a>
+        <!-- Updated sidebar home link text to PrimeShift -->
+        <a href="#">PrimeShift</a>
         <hr>
         <h4>Trending</h4>
-        <a href="#">Best Sellers</a>
-        <a href="#">New Releases</a>
-        <a href="#">Movers & Shakers</a>
+        <a href="#">Best Sellers</a><a href="#">New Releases</a><a href="#">Movers & Shakers</a>
         <hr>
         <h4>Top Departments</h4>
-        <a href="#">Electronics</a>
-        <a href="#">Clothing</a>
-        <a href="#">Games</a>
-        <a href="#">Fitness</a>
+        <a href="#" onclick="closeSidebarMenu(); renderProducts('electronics'); return false;" data-i18n="catElectronics">Electronics</a>
+        <a href="#" onclick="closeSidebarMenu(); renderProducts('clothing'); return false;" data-i18n="catClothing">Clothing</a>
+        <a href="#" onclick="closeSidebarMenu(); renderProducts('games'); return false;" data-i18n="catGames">Games</a>
+        <a href="#" onclick="closeSidebarMenu(); renderProducts('fitness'); return false;" data-i18n="catFitness">Fitness</a>
     </div>
 </div>
 
-<!-- Your auth box starts here -->
-
-<div id="authBox" style="padding:15px; background:#fff3cd; display:none;">
-    <h3>Sign In</h3>
-
-    <button id="googleLogin" 
-        style="padding:8px; background:#4285F4; color:white; border:none; cursor:pointer;">
-        Sign in with Google
-    </button>
-
+<div id="authBox" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2000; padding:15px; background:#fff3cd; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+    <h3 data-i18n="signInTitle">Sign In</h3>
+    <button id="googleLogin" style="width:100%; padding:8px; background:#4285F4; color:white; border:none; border-radius:4px; cursor:pointer;" data-i18n="googleLogin">Sign in with Google</button>
     <br><br>
-
-    <input id="emailInput" type="email" placeholder="Email"
-        style="padding:8px; width:200px;"><br><br>
-
-    <input id="passwordInput" type="password" placeholder="Password"
-        style="padding:8px; width:200px;"><br><br>
-
-    <button id="emailLogin" style="padding:8px; background:#febd69; border:none; cursor:pointer;">
-        Sign in with Email
-    </button>
-
-    <button id="emailSignup" style="padding:8px; background:#ffa41c; border:none; cursor:pointer;">
-        Create Account
-    </button>
-
+    <input id="emailInput" type="email" placeholder="Email" style="width:200px; padding:8px;"><br><br>
+    <input id="passwordInput" type="password" placeholder="Password" style="width:200px; padding:8px;"><br><br>
+    <button id="emailLogin" style="width:100%; padding:8px; background:#febd69; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" data-i18n="emailLogin">Sign in with Email</button>
+    <button id="emailSignup" style="width:100%; padding:8px; background:#ffa41c; border:none; border-radius:4px; font-weight:bold; cursor:pointer; margin-top:5px;" data-i18n="createAccount">Create Account</button>
     <br><br>
-    <button id="closeAuth" style="padding:5px;">Close</button>
+    <button id="closeAuth" style="width:100%; padding:5px; border:none; border-radius:4px; cursor:pointer;" data-i18n="close">Close</button>
 </div>
 
-
-<nav class="categories">
-    <a href="#" data-category="electronics">Electronics</a>
-    <a href="#" data-category="clothing">Clothing</a>
-    <a href="#" data-category="games">Games</a>
-    <a href="#" data-category="fitness">Fitness</a>
-     <a href="#" data-category="beauty">Beauty</a>
-     <a href="#" data-category="health">Health</a>
-    <a href="#" data-category="automotive">Automotive</a>
-    <a href="#" data-category="more">More</a>
-</nav>
+<!-- Row Menu Imported Container -->
+<div id="rowMenuContainer"></div>
 
 <section class="products" id="productGrid"></section>
 
+<!-- Messages Popup Widget -->
+<div id="storeChatPopup" style="display:none; position:fixed; bottom:20px; right:20px; width:750px; height:550px; background:#0f172a; border:1px solid #334155; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.6); z-index:3000; flex-direction:column; overflow:hidden; color:#f8fafc; font-family:inherit;">
+    <div style="padding:12px 16px; background:#1e293b; border-bottom:1px solid #334155; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="width:8px; height:8px; background:#3b82f6; border-radius:50%;"></span>
+            <strong style="font-size:14px;" data-i18n="messages">Messages</strong>
+        </div>
+        <button type="button" id="closeStoreChat" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer;">&times;</button>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;" id="msgBodyContainer"></div>
+</div>
 
+<!-- AI Assistant Popup Widget -->
+<div id="aiAssistantPopup" style="display:none; position:fixed; bottom:20px; right:20px; width:340px; height:450px; background:#1e293b; border:1px solid #334155; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:3000; flex-direction:column; overflow:hidden; color:#f8fafc; font-family:inherit;">
+    <div style="position:absolute; top:12px; right:16px; z-index:3010;">
+        <button type="button" id="closeAiAssistant" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;">&times;</button>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;" id="aiBodyContainer"></div>
+</div>
 
+<script>
+    window.openSidebar = () => document.getElementById("mobileSidebar")?.classList.add("open");
+    window.closeSidebarMenu = () => document.getElementById("mobileSidebar")?.classList.remove("open");
+
+    async function loadContent(url, containerId) {
+        try {
+            const res = await fetch(url);
+            const container = document.getElementById(containerId);
+            container.innerHTML = res.ok ? await res.text() : '<div style="padding:20px; color:#94a3b8;">Content unavailable.</div>';
+            
+            // Execute any script tags embedded inside the loaded HTML snippet
+            container.querySelectorAll("script").forEach(oldScript => {
+                const newScript = document.createElement("script");
+                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+
+            // Re-apply translation updates if language state is active
+            if (window.currentLang && typeof window.updatePageText === "function") {
+                window.updatePageText(window.currentLang);
+            }
+        } catch {
+            document.getElementById(containerId).innerHTML = '<div style="padding:20px; color:#94a3b8;">Load error.</div>';
+        }
+    }
+
+    loadContent('refactor_index/messaging.html', 'msgBodyContainer');
+    loadContent('refactor_index/ai_assistant.html', 'aiBodyContainer');
+    loadContent('refactor_index/sign_in.html', 'accountMenu');
+    loadContent('refactor_index/language.html', 'languageContainer');
+    loadContent('refactor_index/return.html', 'returnsContainer');
+    loadContent('refactor_index/row_menu.html', 'rowMenuContainer');
+
+    window.openStoreChatWidget = e => { e?.preventDefault(); closeSidebarMenu(); document.getElementById("aiAssistantPopup").style.display = "none"; document.getElementById("storeChatPopup").style.display = "flex"; window.backToMessageList?.(); };
+    window.openAiAssistantWidget = e => { e?.preventDefault(); closeSidebarMenu(); document.getElementById("storeChatPopup").style.display = "none"; document.getElementById("aiAssistantPopup").style.display = "flex"; };
+    window.openConversation = name => { document.getElementById("msgListView").style.display = "none"; document.getElementById("msgThreadView").style.display = "flex"; document.getElementById("activeChatName").innerText = name; };
+    window.backToMessageList = () => { document.getElementById("msgThreadView").style.display = "none"; document.getElementById("msgListView").style.display = "flex"; };
+
+    document.getElementById("closeStoreChat").onclick = () => document.getElementById("storeChatPopup").style.display = "none";
+    document.getElementById("closeAiAssistant").onclick = () => document.getElementById("aiAssistantPopup").style.display = "none";
+
+    document.addEventListener("click", e => {
+        const sb = document.getElementById("mobileSidebar"), hm = document.getElementById("hamburgerMenu");
+        if (!document.getElementById("storeChatPopup")?.contains(e.target) && !document.getElementById("aiAssistantPopup")?.contains(e.target)) {
+            if (sb?.classList.contains("open") && !sb.contains(e.target) && !hm?.contains(e.target)) sb.classList.remove("open");
+        }
+    });
+</script>
 
 <script type="module">
+    import { db, auth } from './firebaseConfig.js';
+    import { collection, query, where, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-    
-/* -------------------- IMPORTS ----------------------- */
-import { db, auth } from './firebaseConfig.js';
-import { collection, query, where, getDocs, doc, setDoc, getDoc } 
-    from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    let cart = [], currentUser = null;
+    window.currentLang = "en";
+    const emailInput = document.getElementById("emailInput"), passwordInput = document.getElementById("passwordInput");
 
-    /* -------------------- MOBILE SIDEBAR TOGGLE -------------------- */
-
-
-const hamburger = document.getElementById("hamburgerMenu");
-const mobileSidebar = document.getElementById("mobileSidebar");
-const closeSidebar = document.getElementById("closeSidebar");
-
-hamburger.addEventListener("click", () => {
-    console.log("HAMBURGER CLICKED"); // Debug
-    mobileSidebar.style.transform = "translateX(0)";
-});
-
-closeSidebar.addEventListener("click", () => {
-    console.log("CLOSE CLICKED"); // Debug
-    mobileSidebar.style.transform = "translateX(-100%)";
-});
-
-// Close when clicking outside
-document.addEventListener("click", (e) => {
-    if (
-        !mobileSidebar.contains(e.target) &&
-        !hamburger.contains(e.target)
-    ) {
-        mobileSidebar.style.transform = "translateX(-100%)";
-    }
-});
-
-
-
-
-
-
-/* -------------------- AUTH IMPORTS (ADD THESE) ----------------------- */
-import { 
-    GoogleAuthProvider, signInWithPopup,
-    signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-
-/* -------------------- FIX: Grab inputs AFTER imports ----------------------- */
-const emailInput = document.getElementById("emailInput");
-const passwordInput = document.getElementById("passwordInput");
-
-
-/* -------------------- AUTH BUTTON LOGIC (ADD THIS) ----------------------- */
-
-// ACCOUNT BOX CLICK (Login OR Dropdown)
-document.getElementById("accountBox").onclick = () => {
-    if (currentUser) {
-        // User is logged in → toggle dropdown
-        const menu = document.getElementById("accountMenu");
-        menu.style.display = (menu.style.display === "block") ? "none" : "block";
-    } else {
-        // User is logged out → open login popup
-        document.getElementById("authBox").style.display = "block";
-    }
-};
-
-
-// Close login popup
-document.getElementById("closeAuth").onclick = () => {
-    document.getElementById("authBox").style.display = "none";
-};
-
-// GOOGLE LOGIN
-document.getElementById("googleLogin").onclick = async () => {
-    try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
-        alert("Logged in with Google!");
-        document.getElementById("authBox").style.display = "none";
-        await loadCartFromFirebase();
-    } catch (e) {
-        alert(e.message);
-    }
-};
-
-
-
-// EMAIL LOGIN
-document.getElementById("emailLogin").onclick = async () => {
-    const email = emailInput.value;
-    const pass = passwordInput.value;
-
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        alert("Logged in!");
-        document.getElementById("authBox").style.display = "none";
-        await loadCartFromFirebase();
-    } catch (e) {
-        alert(e.message);
-    }
-};
-
-// EMAIL SIGNUP (FIXED)
-document.getElementById("emailSignup").onclick = async () => {
-    const email = emailInput.value.trim();
-    const pass = passwordInput.value.trim();
-
-    if (!email || !pass) {
-        alert("Please enter a valid email and password.");
-        return;
-    }
-
-    try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        alert("Account created!");
-        document.getElementById("authBox").style.display = "none";
-    } catch (e) {
-        alert(e.message);
-    }
-};
-
-
-// LOGOUT on right-click
-document.querySelector(".account").oncontextmenu = async e => {
-    e.preventDefault();
-    await signOut(auth);
-    alert("Logged out!");
-    cart = [];
-    document.getElementById("cartCount").innerText = 0;
-};
-
-
-
-/* -------------------- YOUR EXISTING CODE CONTINUES BELOW ----------------------- */
-
-let cart = [];
-let currentUser = null;
-
-
-function updateQty(id, change) {
-    const idx = cart.findIndex(p => p.id == id);
-    if (idx > -1) {
-        if (change === -1 && cart.filter(p => p.id == id).length === 1) {
-            cart = cart.filter(p => p.id != id);
-        } else if (change === -1) {
-            const i = cart.findIndex(p => p.id == id);
-            cart.splice(i, 1);
-        } else if (change === +1) {
-            cart.push(cart[idx]);
+    document.addEventListener("change", (e) => {
+        if (e.target && e.target.id === "languageSelect") {
+            window.currentLang = e.target.value;
         }
-        renderCheckout();
-    }
-}
-
-function removeItem(id) {
-    cart = cart.filter(p => p.id != id);
-    renderCheckout();
-}
-
-
-
-const productsData = {
-    home: [{name:"Welcome to PrimeShift!", price:0, img:""}],
-    electronics: [
-        {name:"Laptop", price:899.99, images:["https://via.placeholder.com/150/0000FF","https://via.placeholder.com/150/FF0000","https://via.placeholder.com/150/00FF00"]},
-        {name:"Smartphone", price:399.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-        {name:"Headphones", price:129.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    clothing: [
-        {name:"T-Shirt", price:19.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-        {name:"Jeans", price:49.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    games: [
-        {name:"Console", price:399.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    fitness: [
-        {name:"Dumbbells", price:49.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    beauty: [
-        {name:"Lotion", price:49.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    health: [
-        {name:"vitamins", price:49.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ],
-    automotive: [
-    {name:"Car Oil", price:29.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"Tire", price:129.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"GPS Navigator", price:199.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"Car Cover", price:59.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"Car Battery", price:89.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"Car Vacuum", price:39.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]},
-    {name:"Windshield Wipers", price:24.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-],
-
-    more: [
-        {name:"Books", price:14.99, images:["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"]}
-    ]
-};
-
-
-
-
-/* -------------------- LOGIN STATE TRACKING ----------------------- */
-
-auth.onAuthStateChanged(async user => {
-    currentUser = user;
-
-    const hello = document.getElementById("accountHello");
-    const emailBox = document.getElementById("accountEmail");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (user) {
-        // Logged in
-        hello.innerText = `Hello, ${user.email.split("@")[0]}`;
-        emailBox.innerText = user.email;
-        emailBox.style.display = "block";
-        logoutBtn.style.display = "block";
-
-        console.log("User logged in:", user.uid);
-        await loadCartFromFirebase();
-
-    } else {
-        // Logged out
-        hello.innerText = "Hello, Sign in";
-        emailBox.style.display = "none";
-        logoutBtn.style.display = "none";
-
-        cart = [];
-        document.getElementById("cartCount").innerText = 0;
-
-        console.log("No user logged in");
-    }
-});
-// LOGOUT BUTTON
-document.getElementById("logoutBtn").onclick = async () => {
-    await signOut(auth);
-    alert("You have been logged out.");
-};
-
-
-
-
-/* -------------------- SAVE CART TO FIREBASE ----------------------- */
-async function saveCartToFirebase() {
-    if (!currentUser) return;
-    await setDoc(doc(db, "carts", currentUser.uid), {
-        items: cart
     });
-}
 
-
-
-/* -------------------- LOAD CART FROM FIREBASE ----------------------- */
-async function loadCartFromFirebase() {
-    if (!currentUser) return;
-    const ref = doc(db, "carts", currentUser.uid);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-        cart = snap.data().items;
-        document.getElementById("cartCount").innerText = cart.length;
-    }
-}
-
-/* -------------------- RENDER PRODUCTS ----------------------- */
-
-async function renderProducts(category) {
-    const grid = document.getElementById("productGrid");
-    grid.innerHTML = "";
-
-    try {
-        const q = query(collection(db, "products"), where("category", "==", category));
-        const snapshot = await getDocs(q);
-
-        console.log("Category:", category);
-        console.log("Firestore docs:", snapshot.docs.map(d => d.data()));
-
-        snapshot.forEach(doc => addProductToGrid(doc.data(), grid));
-
-        if (snapshot.empty) {
-            grid.innerHTML = "<p>No products found in this category.</p>";
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.id === "dropdownSignInBtn") {
+            document.getElementById("authBox").style.display = "block";
         }
-    } catch (err) {
-        console.error(err);
-        grid.innerHTML = "<p>Error loading products.</p>";
+        if (e.target && e.target.id === "dropdownStartHere") {
+            e.preventDefault();
+            document.getElementById("authBox").style.display = "block";
+        }
+        if (e.target && e.target.id === "logoutBtn") {
+            signOut(auth).then(() => alert("Logged out."));
+        }
+    });
+
+    document.getElementById("closeAuth").onclick = () => document.getElementById("authBox").style.display = "none";
+    document.getElementById("googleLogin").onclick = async () => { try { await signInWithPopup(auth, new GoogleAuthProvider()); alert("Logged in!"); document.getElementById("authBox").style.display = "none"; await loadCart(); } catch(e) { alert(e.message); } };
+    document.getElementById("emailLogin").onclick = async () => { try { await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value); alert("Logged in!"); document.getElementById("authBox").style.display = "none"; await loadCart(); } catch(e) { alert(e.message); } };
+    document.getElementById("emailSignup").onclick = async () => { try { await createUserWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value.trim()); alert("Account created!"); document.getElementById("authBox").style.display = "none"; } catch(e) { alert(e.message); } };
+
+    auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        const hello = document.getElementById("accountHello");
+        const menuAuthSection = document.getElementById("menuAuthSection");
+        const logoutListItem = document.getElementById("logoutListItem");
+
+        if (user) {
+            if (hello) hello.innerText = user.email.split("@")[0];
+            if (menuAuthSection) menuAuthSection.style.display = "none";
+            if (logoutListItem) logoutListItem.style.display = "block";
+            await loadCart();
+        } else {
+            if (hello && window.translations) hello.innerText = window.translations[window.currentLang].hello;
+            if (menuAuthSection) menuAuthSection.style.display = "block";
+            if (logoutListItem) logoutListItem.style.display = "none";
+            cart = [];
+            document.getElementById("cartCount").innerText = 0;
+        }
+    });
+
+    async function saveCart() { if (currentUser) await setDoc(doc(db, "carts", currentUser.uid), { items: cart }); }
+    async function loadCart() { if (currentUser) { const snap = await getDoc(doc(db, "carts", currentUser.uid)); if (snap.exists()) { cart = snap.data().items; document.getElementById("cartCount").innerText = cart.length; } } }
+
+    window.renderProducts = async function(category) {
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = "";
+        if (category === "jobs") {
+            grid.innerHTML = `<div style="grid-column:1/-1; padding:20px; background:#1e293b; color:#fff; border-radius:8px;">
+                <h2>Open Career Opportunities</h2>
+                <div style="margin-top:20px; display:flex; flex-direction:column; gap:15px;">
+                    <div style="padding:15px; background:#0f172a; border:1px solid #334155; border-radius:6px;"><h3>Senior Full-Stack Engineer</h3><button onclick="alert('Sent!')" style="margin-top:8px; padding:6px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer;">Apply Now</button></div>
+                </div></div>`;
+            return;
+        }
+        try {
+            const snapshot = await getDocs(query(collection(db, "products"), where("category", "==", category)));
+            snapshot.forEach(d => {
+                const p = d.data(), div = document.createElement("div");
+                div.className = "product";
+                div.innerHTML = `<img src="${p.images?.[0] || ''}"><h3>${p.name}</h3><p>$${p.price}</p><button class="addBtn">Add to Cart</button><button class="buyBtn">Buy Now</button>`;
+                div.querySelector(".addBtn").onclick = async () => { cart.push(p); document.getElementById("cartCount").innerText = cart.length; await saveCart(); };
+                div.querySelector(".buyBtn").onclick = () => alert(`Buying ${p.name}`);
+                grid.appendChild(div);
+            });
+            if (snapshot.empty) grid.innerHTML = "<p>No products found.</p>";
+        } catch { grid.innerHTML = "<p>Error loading products.</p>"; }
+    };
+
+    function renderCheckout() {
+        const grid = document.getElementById("productGrid"), grouped = {};
+        cart.forEach(item => { if (!grouped[item.id]) grouped[item.id] = { ...item, qty: 0 }; grouped[item.id].qty++; });
+        grid.innerHTML = `<h2>Your Cart</h2><div id="cartList"></div><h3 id="cartTotal"></h3><button id="proceedCheckoutBtn" style="padding:12px; width:200px; background:#f08804; border:none; border-radius:6px; cursor:pointer; margin-top:20px;">Proceed to Checkout</button>`;
+        const list = document.getElementById("cartList"); let total = 0;
+        Object.values(grouped).forEach(item => {
+            total += item.price * item.qty;
+            const div = document.createElement("div"); div.className = "product";
+            div.innerHTML = `<img src="${item.images?.[0]}"><h3>${item.name}</h3><p>$${item.price} x ${item.qty}</p><button class="qtyPlus" data-id="${item.id}">+</button><button class="qtyMinus" data-id="${item.id}">-</button><button class="removeItem" data-id="${item.id}" style="background:red;color:white;">Remove</button>`;
+            list.appendChild(div);
+        });
+        document.getElementById("cartTotal").innerText = "Total: $" + total.toFixed(2);
+        document.querySelectorAll(".qtyPlus").forEach(btn => btn.onclick = () => { const idx = cart.findIndex(p => p.id == btn.dataset.id); if(idx>-1) cart.push(cart[idx]); renderCheckout(); });
+        document.querySelectorAll(".qtyMinus").forEach(btn => btn.onclick = () => { const idx = cart.findIndex(p => p.id == btn.dataset.id); if(idx>-1) cart.splice(idx,1); renderCheckout(); });
+        document.querySelectorAll(".removeItem").forEach(btn => btn.onclick = () => { cart = cart.filter(p => p.id != btn.dataset.id); renderCheckout(); });
+        document.getElementById("proceedCheckoutBtn").onclick = () => window.location.href = "checkout.html";
     }
-}
 
-/* -------------------- ADD PRODUCT CARD ----------------------- */
-function addProductToGrid(product, grid) {
-    const div = document.createElement("div");
-    div.className = "product";
-
-    div.innerHTML = `
-        <img src="${product.images?.[0] || ''}">
-        <h3>${product.name}</h3>
-        <p>$${product.price}</p>
-        <button class="addBtn">Add to Cart</button>
-        <button class="buyBtn">Buy Now</button>
-    `;
-
-    div.querySelector(".addBtn").onclick = async () => {
-        cart.push(product);
-        document.getElementById("cartCount").innerText = cart.length;
-        await saveCartToFirebase(); // <-- ADDED
-    };
-
-    div.querySelector(".buyBtn").onclick = () => {
-        alert(`Buying ${product.name}`);
-    };
-
-    grid.appendChild(div);
-}
-
-/* -------------------- CHECKOUT ----------------------- */
-function renderCheckout() {
-    const grid = document.getElementById("productGrid");
-
-    // GROUP ITEMS BY ID
-    const grouped = {};
-    cart.forEach(item => {
-        if (!grouped[item.id]) grouped[item.id] = { ...item, qty: 0 };
-        grouped[item.id].qty++;
+    document.addEventListener("click", e => {
+        if (e.target.closest("#returnsContainer") || e.target.id === "cartIcon") {
+            renderCheckout();
+        }
     });
-
-    const items = Object.values(grouped);
-
-    grid.innerHTML = `
-        <h2>Your Cart</h2>
-        <div id="cartList"></div>
-        <h3 id="cartTotal"></h3>
-        <button id="proceedCheckoutBtn" style="
-            padding:12px;
-            width:200px;
-            font-size:16px;
-            background:#f08804;
-            border:none;
-            cursor:pointer;
-            border-radius:6px;
-            margin-top:20px;
-        ">Proceed to Checkout</button>
-    `;
-
-    const list = document.getElementById("cartList");
-    let total = 0;
-
-    items.forEach(item => {
-        total += item.price * item.qty;
-
-        const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-            <img src="${item.images?.[0]}">
-            <h3>${item.name}</h3>
-            <p>$${item.price} x ${item.qty}</p>
-
-            <button class="qtyPlus" data-id="${item.id}">+</button>
-            <button class="qtyMinus" data-id="${item.id}">-</button>
-            <button class="removeItem" data-id="${item.id}" style="background:red;color:white;">Remove</button>
-        `;
-        list.appendChild(div);
-    });
-
-    document.getElementById("cartTotal").innerText = "Total: $" + total.toFixed(2);
-
-    // Quantity & Remove buttons
-    document.querySelectorAll(".qtyPlus").forEach(btn =>
-        btn.onclick = () => updateQty(btn.dataset.id, +1)
-    );
-
-    document.querySelectorAll(".qtyMinus").forEach(btn =>
-        btn.onclick = () => updateQty(btn.dataset.id, -1)
-    );
-
-    document.querySelectorAll(".removeItem").forEach(btn =>
-        btn.onclick = () => removeItem(btn.dataset.id)
-    );
-
-    // Checkout button → go to checkout.html
-document.getElementById("proceedCheckoutBtn").onclick = () => {
-    window.location.href = "checkout.html";
-};
-
-}
-
-
-/* -------------------- EVENTS ----------------------- */
-
-/* -------------------- CATEGORY CLICK HANDLERS ----------------------- */
-document.querySelectorAll(".categories a").forEach(link => {
-    link.onclick = (e) => {
-        e.preventDefault(); // Prevent default link behavior
-        const category = link.dataset.category.toLowerCase().trim();
-        renderProducts(category); // Call your function to populate products
-    };
-});
-
-/* -------------------- CART & ORDERS CLICK HANDLERS ----------------------- */
-// Cart icon → open checkout
-document.getElementById("cartIcon").onclick = () => {
-    renderCheckout();
-};
-
-// Returns / Orders → open checkout
-const orders = document.querySelector(".returns-orders");
-if (orders) {
-    orders.onclick = () => renderCheckout();
-}
-
-
-
-/* -------------------- LOGO CLICK → GO HOME ----------------------- */
-document.getElementById("logoLink").onclick = (e) => {
-    e.preventDefault();
-    renderProducts("home");
-};
-
-
-
-
+    document.getElementById("logoLink").onclick = e => { e.preventDefault(); renderProducts("home"); };
 </script>
-<div id="aiChatButton">💬</div>
-<div id="aiChatWindow"></div>
-
-<script type="module" src="aiChat.js"></script>
-
-
-
-
 
 </body>
 </html>
-

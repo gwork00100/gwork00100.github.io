@@ -133,12 +133,13 @@
         }
     }
 
-    loadContent('refactor_index/messaging.html', 'msgBodyContainer');
-    loadContent('refactor_index/ai_assistant.html', 'aiBodyContainer');
-    loadContent('refactor_index/sign_in.html', 'accountMenu');
-    loadContent('refactor_index/language.html', 'languageContainer');
-    loadContent('refactor_index/return.html', 'returnsContainer');
-    loadContent('refactor_index/row_menu.html', 'rowMenuContainer');
+    // Using relative paths with './' for proper GitHub Pages subfolder compatibility
+    loadContent('./refactor_index/messaging.html', 'msgBodyContainer');
+    loadContent('./refactor_index/ai_assistant.html', 'aiBodyContainer');
+    loadContent('./refactor_index/sign_in.html', 'accountMenu');
+    loadContent('./refactor_index/language.html', 'languageContainer');
+    loadContent('./refactor_index/return.html', 'returnsContainer');
+    loadContent('./refactor_index/row_menu.html', 'rowMenuContainer');
 
     window.openStoreChatWidget = e => { e?.preventDefault(); closeSidebarMenu(); document.getElementById("aiAssistantPopup").style.display = "none"; document.getElementById("storeChatPopup").style.display = "flex"; window.backToMessageList?.(); };
     window.openAiAssistantWidget = e => { e?.preventDefault(); closeSidebarMenu(); document.getElementById("storeChatPopup").style.display = "none"; document.getElementById("aiAssistantPopup").style.display = "flex"; };
@@ -237,22 +238,51 @@
         } catch { grid.innerHTML = "<p>Error loading products.</p>"; }
     };
 
-    function renderCheckout() {
-        const grid = document.getElementById("productGrid"), grouped = {};
+    async function renderCheckout() {
+        const grid = document.getElementById("productGrid");
+        
+        try {
+            const res = await fetch('./refactor_index/cart.html');
+            grid.innerHTML = res.ok ? await res.text() : '<div style="padding:20px;">Cart template unavailable.</div>';
+        } catch {
+            grid.innerHTML = '<div style="padding:20px;">Error loading cart view.</div>';
+            return;
+        }
+
+        // Apply translation updates immediately after cart HTML is loaded into the DOM
+        if (window.currentLang && typeof window.updatePageText === "function") {
+            window.updatePageText(window.currentLang);
+        }
+
+        const grouped = {};
         cart.forEach(item => { if (!grouped[item.id]) grouped[item.id] = { ...item, qty: 0 }; grouped[item.id].qty++; });
-        grid.innerHTML = `<h2>Your Cart</h2><div id="cartList"></div><h3 id="cartTotal"></h3><button id="proceedCheckoutBtn" style="padding:12px; width:200px; background:#f08804; border:none; border-radius:6px; cursor:pointer; margin-top:20px;">Proceed to Checkout</button>`;
-        const list = document.getElementById("cartList"); let total = 0;
-        Object.values(grouped).forEach(item => {
-            total += item.price * item.qty;
-            const div = document.createElement("div"); div.className = "product";
-            div.innerHTML = `<img src="${item.images?.[0]}"><h3>${item.name}</h3><p>$${item.price} x ${item.qty}</p><button class="qtyPlus" data-id="${item.id}">+</button><button class="qtyMinus" data-id="${item.id}">-</button><button class="removeItem" data-id="${item.id}" style="background:red;color:white;">Remove</button>`;
-            list.appendChild(div);
-        });
-        document.getElementById("cartTotal").innerText = "Total: $" + total.toFixed(2);
+        
+        const list = document.getElementById("cartList"); 
+        let total = 0;
+
+        if (list) {
+            Object.values(grouped).forEach(item => {
+                total += item.price * item.qty;
+                const div = document.createElement("div"); 
+                div.className = "cart-item";
+                div.innerHTML = `<img src="${item.images?.[0]}"><div class="cart-item-details"><h3>${item.name}</h3><p>$${item.price} x ${item.qty}</p><div class="cart-item-actions"><button class="qtyPlus" data-id="${item.id}">+</button><button class="qtyMinus" data-id="${item.id}">-</button><button class="removeItem" data-id="${item.id}">Remove</button></div></div>`;
+                list.appendChild(div);
+            });
+        }
+
+        const cartTotalElem = document.getElementById("cartTotal");
+        if (cartTotalElem) {
+            cartTotalElem.innerText = "Total: $" + total.toFixed(2);
+        }
+
         document.querySelectorAll(".qtyPlus").forEach(btn => btn.onclick = () => { const idx = cart.findIndex(p => p.id == btn.dataset.id); if(idx>-1) cart.push(cart[idx]); renderCheckout(); });
         document.querySelectorAll(".qtyMinus").forEach(btn => btn.onclick = () => { const idx = cart.findIndex(p => p.id == btn.dataset.id); if(idx>-1) cart.splice(idx,1); renderCheckout(); });
         document.querySelectorAll(".removeItem").forEach(btn => btn.onclick = () => { cart = cart.filter(p => p.id != btn.dataset.id); renderCheckout(); });
-        document.getElementById("proceedCheckoutBtn").onclick = () => window.location.href = "checkout.html";
+        
+        const checkoutBtn = document.getElementById("proceedCheckoutBtn");
+        if (checkoutBtn) {
+            checkoutBtn.onclick = () => window.location.href = "checkout.html";
+        }
     }
 
     document.addEventListener("click", e => {
